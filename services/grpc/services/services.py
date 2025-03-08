@@ -11,25 +11,17 @@ from grpc_registry.generic_service.service_pb2_grpc import (
 
 def wrapper(method):
     @wraps(method)
-    def wrapped(*args, **kwargs):
-        logging.debug(f"** RPC {method.__name__}")
-        self = args[0]
-        context = args[2]
-        if self.remove:
-            self.remove()
+    def wrapped(self, request, context):
+        logging.info(f"gRPC Request: {method.__name__} - Payload: {request}")
         try:
-            res = method(*args, **kwargs)
-        except IndexError as e:
-            logging.error(f"IndexError: {e}")
-            context.set_code(grpc.StatusCode.NOT_FOUND)
+            response = method(self, request, context)
+            logging.info(f"gRPC Response: {response}")
+            return response
+        except Exception as e:
+            logging.error(f"gRPC Error in {method.__name__}: {str(e)}")
+            context.set_code(grpc.StatusCode.INTERNAL)
             context.set_details(str(e))
             return Empty()
-
-        if self.commit:
-            self.commit()
-        logging.debug(f"** RPC {method.__name__} END")
-        return res
-
     return wrapped
 
 class GRPCServiceMeta(type):

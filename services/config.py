@@ -1,9 +1,11 @@
-from pydantic import BaseModel
 import os
 from dotenv import load_dotenv
+from pydantic import BaseModel, Field
+
 # Load environment variables
 load_dotenv()
 
+SERVICE_NAME = "GENERIC_SERVICE"
 
 GRPC_PORT = os.getenv("GRPC_PORT", "50051")
 INTERNAL_GRPC_PORT = os.getenv("INTERNAL_GRPC_PORT", "50052")
@@ -13,11 +15,16 @@ KAFKA_TOPIC = os.getenv("KAFKA_TOPIC", "keven_events")
 
 
 class Config(BaseModel):
-    GRPC_PORT: str = GRPC_PORT
-    INTERNAL_GRPC_PORT: str = INTERNAL_GRPC_PORT
-    HTTP_PORT: str = HTTP_PORT
-    KAFKA_BROKER: str = KAFKA_BROKER
-    KAFKA_TOPIC: str = KAFKA_TOPIC
+    GRPC_PORT: int = Field(default=GRPC_PORT, ge=1024, le=65535)
+    INTERNAL_GRPC_PORT: int = Field(default=INTERNAL_GRPC_PORT, ge=1024, le=65535)
+    HTTP_PORT: int = Field(default=HTTP_PORT, ge=1024, le=65535)
+    KAFKA_BROKER: str = Field(default=KAFKA_BROKER)
+    KAFKA_TOPIC: str = Field(default=KAFKA_TOPIC)
+    SERVICE_NAME: str = Field(default=SERVICE_NAME)
+
+    @property
+    def service_name(self):
+        return self.SERVICE_NAME
 
     @property
     def kafka_broker(self):
