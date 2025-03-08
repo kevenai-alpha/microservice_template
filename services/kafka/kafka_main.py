@@ -13,10 +13,13 @@ def get_producer(cfg):
     return KafkaProducer(bootstrap_servers=cfg.kafka_broker)
 
 def consume_messages(cfg, svc_logger):
-    try:
-        consumer = KafkaConsumer(cfg.kafka_topic, bootstrap_servers=cfg.kafka_broker, auto_offset_reset='earliest')
-        for message in consumer:
-            svc_logger.info("Received Kafka message: %s", message.value.decode("utf-8"))
-    except Exception as e:
-        svc_logger.error(f"Kafka connection failed: {e}. Retrying in 5s...")
-        time.sleep(5)
+    retry_delay = 5
+    while True:
+        try:
+            consumer = KafkaConsumer(cfg.kafka_topic, bootstrap_servers=cfg.kafka_broker, auto_offset_reset='earliest')
+            for message in consumer:
+                svc_logger.info("Received Kafka message: %s", message.value.decode("utf-8"))
+        except Exception as e:
+            svc_logger.error(f"Kafka connection failed: {e}. Retrying in 5s...")
+            time.sleep(retry_delay)
+            retry_delay = min(retry_delay * 2, 60)

@@ -18,7 +18,7 @@ class Config(BaseModel):
     GRPC_PORT: int = Field(default=GRPC_PORT, ge=1024, le=65535)
     INTERNAL_GRPC_PORT: int = Field(default=INTERNAL_GRPC_PORT, ge=1024, le=65535)
     HTTP_PORT: int = Field(default=HTTP_PORT, ge=1024, le=65535)
-    KAFKA_BROKER: str = Field(default=KAFKA_BROKER)
+    KAFKA_BROKER: str = Field(default=KAFKA_BROKER, regex=r"^[a-zA-Z0-9._-]+:\d+$")
     KAFKA_TOPIC: str = Field(default=KAFKA_TOPIC)
     SERVICE_NAME: str = Field(default=SERVICE_NAME)
 

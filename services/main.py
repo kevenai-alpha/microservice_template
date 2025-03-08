@@ -10,8 +10,8 @@ from concurrent import futures
 
 # Configuration
 
-def serve_grpc(cfg, executor, is_internal=False, server_credentials=None):
-    server = grpc.server(executor)
+def serve_grpc(cfg, is_internal=False, server_credentials=None):
+    server = grpc.server()
     add_grpc_services(server)
     logger_msg = f"'{cfg.service_name}' gRPC server started on port "
     grpc_port = cfg.internal_grpc_port if is_internal else cfg.grpc_port
@@ -43,8 +43,8 @@ if __name__ == "__main__":
         future_kafka = executor.submit(consume_messages, config, logger)
 
         # Start gRPC Servers
-        future_grpc = serve_grpc(config, executor)
-        future_internal_grpc = serve_grpc(config, executor, True)
+        future_grpc = executor.submit(serve_grpc, config)
+        future_internal_grpc = executor.submit(serve_grpc, config, True)
 
         # Start REST API
         future_api = executor.submit(
