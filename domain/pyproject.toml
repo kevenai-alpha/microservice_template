@@ -1,14 +1,14 @@
 [tool.poetry]
 name = "generic_microservice_domain"
 version = "0.1.0"
-description = ""
+description = "The domain submodule for the generic KEVEN microservice, defining core business logic, domain models, and data validation structures."
 authors = ["Craig Holland <craig_holland@hotmail.com>"]
 license = "AGPL-3.0"
 readme = "README.md"
-packages = [{include = "generic_microservice_domain"}]
+packages = [{include = "domain"}]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.13"
 flask = "^3.0.0"
 grpcio = "^1.59.0"
 grpcio-tools = "^1.59.0"
