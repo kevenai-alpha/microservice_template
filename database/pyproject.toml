@@ -5,18 +5,16 @@ description = "The database submodule for the generic KEVEN microservice, respon
 authors = ["Craig Holland <craig_holland@hotmail.com>"]
 license = "AGPL-3.0"
 readme = "README.md"
-packages = [{include = "generic_microservice_database"}]
+packages = [{include = "database"}]
 
 [tool.poetry.dependencies]
-python = "^3.13"
+python = "^3.12"
 flask = "^3.0.0"
 grpcio = "^1.59.0"
 grpcio-tools = "^1.59.0"
 protobuf = "^4.25.0"
-kafka-python = "^2.0.2"
 pydantic = "^2.5.2"
 python-dotenv = "^1.0.0"
-confluent-kafka = "^2.2.0"
 
 # Internal Dependencies (referencing other submodules)
 generic_microservice_domain = "0.1.0"
@@ -35,3 +33,11 @@ start = "services.main:main"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[[tool.poetry.source]]
+name = "local"
+url = "http://localhost:9090"
+priority = "supplemental"
+
+
+
