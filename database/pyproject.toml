@@ -18,6 +18,11 @@ python-dotenv = "^1.0.0"
 
 # Internal Dependencies (referencing other submodules)
 generic_microservice_domain = "0.1.0"
+alembic = "^1.15.1"
+psycopg2 = "^2.9.10"
+sqla-wrapper = "3.0.0"
+sqlalchemy = "1.4.42"
+sqlalchemy-utils = "0.41.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.0"
