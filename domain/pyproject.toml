@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "generic_microservice_domain"
-version = "0.1.0"
+version = "0.1.2"
 description = "The domain submodule for the generic KEVEN microservice, defining core business logic, domain models, and data validation structures."
 authors = ["Craig Holland <craig_holland@hotmail.com>"]
 license = "AGPL-3.0"
@@ -8,10 +8,12 @@ readme = "README.md"
 packages = [{include = "domain"}]
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = ">=3.12,<4.0"
 protobuf = "^4.25.0"
 pydantic = "^2.5.2"
 python-dotenv = "^1.0.0"
+
+keven_core = { version = "0.2.0", source = "local-pypi" }
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.0"
@@ -25,3 +27,8 @@ flake8 = "^6.1.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[[tool.poetry.source]]
+name = "local-pypi"
+url = "http://localhost:9090/simple/"
+priority = "explicit"
