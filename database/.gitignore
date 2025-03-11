@@ -21,6 +21,9 @@ ENV/
 env/
 pip-wheel-metadata/
 
+#Environment Varibles
+*.env
+
 # Logs and database files
 *.log
 *.sqlite3

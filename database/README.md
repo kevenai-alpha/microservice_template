@@ -1,63 +1,68 @@
-# Services Submodule
+# Database Submodule
 
 ## Overview
-The `services` submodule is responsible for handling the core functionalities of a KEVEN microservice. It provides the following key features:
+The `generic_microservice_database` submodule is responsible for managing database interactions within the KEVEN microservice architecture. It provides database models, connection handling, migrations, and query abstractions to ensure efficient and maintainable data operations.
 
-- **gRPC Server**: Implements gRPC endpoints for inter-service communication.
-- **Internal gRPC Server**: Runs a separate internal gRPC server for secured microservice interactions.
-- **REST API**: Provides an optional Flask-based RESTful API for external interactions.
-- **Kafka Integration**: Supports Kafka-based event-driven communication by publishing and consuming messages.
-- **Threaded Execution**: Uses `concurrent.futures.ThreadPoolExecutor` to run gRPC, Kafka, and REST services concurrently.
+## Features
+- **Database Connection Management**: Handles connections to PostgreSQL, Redis, or other databases as configured.
+- **ORM Support**: Uses SQLAlchemy or other ORM libraries to interact with relational databases.
+- **Migration Support**: Utilizes Alembic or a similar tool to manage schema changes.
+- **Caching**: Integrates with Redis for high-speed caching where necessary.
+- **Configuration via Environment Variables**: Uses `.env` or OS environment variables for database credentials and settings.
 
----
+## Installation
+Ensure that the `generic_microservice_database` submodule is included as a dependency in your microservice's `pyproject.toml`:
 
-## Installation & Usage
-
-### **1. Installing Poetry**
-Ensure that Poetry is installed before managing dependencies:
-```sh
-curl -sSL https://install.python-poetry.org | python3 -
-
-After installation, verify the installation by running:
-```sh
-poetry --version
+```toml
+[tool.poetry.dependencies]
+generic_microservice_database = { version = "0.1.0", source = "local-pypi" }
 ```
 
-### **2. Installing Dependencies**
-Navigate to the `services` directory and install the required dependencies:
-```sh
-cd services
+Run the following command to install the dependency:
+```bash
 poetry install
-``` 
-This will install the required dependencies in a virtual environment.
-
-### **3. Running the Service**
-To run the service, execute the following command:
-```sh
-poetry run python -m services
 ```
-This will start the gRPC server, internal gRPC server, REST API, and Kafka integration.
 
-### **4. Adding New Dependencies**
-To add new dependencies, use the following command:
-```sh
-poetry add <package-name>
+## Environment Variables
+The following environment variables should be configured for database connectivity:
+
+| Variable            | Description |
+|---------------------|-------------|
+| `DATABASE_URL`      | Connection string for the primary database |
+| `REDIS_URL`        | Connection string for Redis (if used) |
+| `DB_POOL_SIZE`     | Maximum database connection pool size |
+
+Example `.env` file:
+```ini
+DATABASE_URL=postgresql://user:password@localhost:5432/mydb
+REDIS_URL=redis://localhost:6379/0
+DB_POOL_SIZE=10
 ```
-This will add the specified package to the `pyproject.toml` file and install it in the virtual environment.
 
-### **5. Running Tests**
-To run the tests, execute the following command:
-```sh
-poetry run pytest
+## Usage
+### Connecting to the Database
+Example of initializing a database session with SQLAlchemy:
+
+```python
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+import os
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 ```
-This will run the test cases defined in the `tests` directory.
 
-
-### **6. Linting**
-To run the linters, execute the following commands:
-```sh
-poetry run black services -l 79
-poetry run flake8 services --ignore=E203,W503,W504
+### Running Migrations
+If using Alembic, apply migrations with:
+```bash
+alembic upgrade head
 ```
----
 
+## Contributing
+- Follow the project's contribution guidelines.
+- Use pre-commit hooks for code formatting and linting.
+- Ensure all database schema changes are versioned properly using migrations.
+
+## License
+This submodule is licensed under **AGPL-3.0**.
