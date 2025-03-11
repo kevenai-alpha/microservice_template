@@ -1,4 +1,4 @@
-# Services Submodule
+# Domain Submodule
 
 ## Overview
 The `domain` submodule is responsible for  defining core business logic, domain models, and data validation structures. It serves as a pure business logic layer, ensuring that core functionalities are decoupled from database persistence and service operations.
