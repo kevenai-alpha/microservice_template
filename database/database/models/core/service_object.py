@@ -1,5 +1,5 @@
 from sqlalchemy import Column, func, Text, DateTime, text
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, JSONB
 
 
 class ServiceObject(object):
@@ -21,6 +21,6 @@ class ServiceObject(object):
     )
     data_origin = Column(Text, nullable=True)
 
+    meta_data = Column(JSONB, nullable=True)
 
-class NamedType(ServiceObject):
-    name = Column(Text, index=True, unique=True)
+

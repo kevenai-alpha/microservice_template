@@ -1,11 +1,13 @@
 from logging.config import fileConfig
-import os
 from sqlalchemy import (engine_from_config, pool, create_engine)
 from database.models.core.main import db
 
 from alembic import context
 from database.config import config as db_config
 from dotenv import load_dotenv
+from alembic_utils.pg_extension import PGExtension
+from alembic_utils.replaceable_entity import register_entities
+
 
 load_dotenv()
 DATABASE_URL = db_config.postgres_uri
@@ -16,13 +18,16 @@ config = context.config
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
-fileConfig(config.config_file_name)
+
+alembic_config = context.config
+if alembic_config.attributes.get('configure_logger', True):
+    fileConfig(config.config_file_name, disable_existing_loggers=False)
 
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = db.metadata
+target_metadata = db.Model.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -30,6 +35,13 @@ target_metadata = db.metadata
 # ... etc.
 config.set_main_option('sqlalchemy.url', DATABASE_URL)
 engine = create_engine(DATABASE_URL)
+
+uuid_ossp_ext = PGExtension(
+    schema="public",
+    signature="uuid-ossp",
+)
+register_entities([uuid_ossp_ext])
+
 
 def run_migrations_offline():
     """Run migrations in 'offline' mode.
